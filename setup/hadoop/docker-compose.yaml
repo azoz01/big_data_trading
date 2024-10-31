@@ -1,0 +1,82 @@
+version: "2"
+services:
+  # hive_metastore:
+  #   image: mysql/mysql-server:8.0.28
+  #   hostname: hive_metastore
+  #   ports:
+  #     - 3306:3306
+  #   restart: always
+  #   volumes:
+  #     - ../../data/hive/metastore:/var/lib/mysql
+  #     - ./scripts:/scripts:ro
+  #     - ./scripts/setup_metastore.sql:/docker-entrypoint-initdb.d/1.sql:ro
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "password"
+  #     MYSQL_ROOT_HOST: "%"
+  #     MYSQL_USER: "hadoop"
+  #     MYSQL_PASSWORD: "hadoop"
+  # datanode:
+  #   image: apache/hadoop:3
+  #   env_file:
+  #     - ./config/hadoop-config.yaml
+  #   volumes:
+  #     - ../../data/hadoop/data:/tmp/hadoop-hadoop/dfs/data:rw
+  #     - ./scripts:/scripts:ro
+  #   command: /scripts/initialize_datanode.sh
+  # namenode:
+  #   image: azoz01/hadoop-namenode
+  #   hostname: namenode
+  #   ports:
+  #     - 9870:9870
+  #     - 50070:50070
+  #   env_file:
+  #     - ./config/hadoop-config.yaml
+  #   volumes:
+  #     - ../../data/hadoop/name:/tmp/hadoop-hadoop/dfs/name:rw
+  #     - ./scripts:/scripts:ro
+  #   command: /scripts/initialize_namenode.sh
+  # resourcemanager:
+  #   image: apache/hadoop:3
+  #   hostname: resourcemanager
+  #   command: [ "yarn", "resourcemanager" ]
+  #   ports:
+  #     - 8088:8088
+  #   env_file:
+  #     - ./config/hadoop-config.yaml
+  # nodemanager:
+  #   image: apache/hadoop:3
+  #   command: [ "yarn", "nodemanager" ]
+  #   env_file:
+  #     - ./config/hadoop-config.yaml
+  # kafka:
+  #   image: apache/kafka:latest
+  #   ports:
+  #     - 9092:9092
+  # redis:
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+  # elastic: # sysctl -w vm.max_map_count=262144
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+  #   ports:
+  #     - 9200:9200
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - xpack.security.enrollment.enabled=false
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.15.3
+  #   ports:
+  #     - 5601:5601
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elastic:9200
+      # volumes:
+      #   - ../../data/elastic:/usr/share/elasticsearch/data:rw
+  nifi:
+    image: apache/nifi:2.0.0-M4
+    ports:
+      - 8080:8080
+    # environment:
+    #   - NIFI_WEB_HTTP_PORT=8080
+    # entrypoint: "../scripts/start.sh"
+      # [ "tail", "-f", "/dev/null" ] # ../scripts/start.sh || 
