@@ -16,5 +16,7 @@ sleep 1
 hadoop fs -chmod 777 /tmp
 hadoop fs -chmod 777 /user/hive/warehouse
 
-schematool -initSchema -dbType mysql --verbose
+if [[ $(schematool -info -dbType mysql 2>/dev/null | grep -c "Metastore schema version:") -eq 0 ]]; then
+    schematool -initSchema -dbType mysql --verbose 
+fi
 hive --service hiveserver2
