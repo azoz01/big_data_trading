@@ -76,7 +76,7 @@ services:
     volumes:
       - ../../data/elastic:/usr/share/elasticsearch/data:rw
   nifi:
-    image: apache/nifi:latest
+    image: azoz01/nifi
     cap_add:
       - NET_ADMIN
     ports:

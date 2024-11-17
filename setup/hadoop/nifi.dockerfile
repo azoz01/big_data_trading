@@ -1,3 +1,5 @@
-FROM apache/nifi:1.27.0
+FROM apache/nifi:1.28.0
 
-COPY config/nifi.properties /opt/nifi/nifi-current/conf/nifi.properties
+RUN curl -fo /opt/nifi/nifi-current/lib/nifi-hadoop-nar-1.28.0.nar https://repo1.maven.org/maven2/org/apache/nifi/nifi-hadoop-nar/1.28.0/nifi-hadoop-nar-1.28.0.nar
+
+ENTRYPOINT ["../scripts/start.sh"]
