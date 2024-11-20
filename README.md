@@ -7,12 +7,18 @@ groupadd hadoop
 sudo usermod -aG hadoop hadoop
 ```
 
-Also, you need to have docker and docker compose installed.
+Also, you need to have docker and docker compose plugin <= 2.29.2 installed.
+newer versions do not allow hyphen in variable name
 
 To start run entire setup execute:
 ``` bash
     cd setup && ./initialize_host.sh && ./run.sh
 ```
+
+## Nifi tips & tricks
+* to use PutHdfs and the like set hadoop configuration properties to "/opt/config/hdfs-site.xml,/opt/config/core-site.xml"
+* DO NOT CHANGE the name of the namenode container as nifi relies on this name to resolve it
+
 
 ## Where all guys are?
 Mapping of addresses of specific components:

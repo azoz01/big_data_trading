@@ -15,6 +15,10 @@ services:
       MYSQL_ROOT_HOST: "%"
       MYSQL_USER: "hadoop"
       MYSQL_PASSWORD: "hadoop"
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   datanode:
     image: apache/hadoop:3
     env_file:
@@ -25,6 +29,10 @@ services:
     ports:
       - 9864:9864
     command: /scripts/initialize_datanode.sh
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   namenode:
     image: azoz01/hadoop-namenode
     # hostname: namenode
@@ -38,6 +46,11 @@ services:
       - ../../data/hadoop/name:/tmp/hadoop-hadoop/dfs/name:rw
       - ./scripts:/scripts:ro
     command: /scripts/initialize_namenode.sh
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
+    container_name: namenode
   resourcemanager:
     image: apache/hadoop:3
     hostname: resourcemanager
@@ -46,19 +59,35 @@ services:
       - 8088:8088
     env_file:
       - ./config/hadoop-config.yaml
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   nodemanager:
     image: apache/hadoop:3
     command: [ "yarn", "nodemanager" ]
     env_file:
       - ./config/hadoop-config.yaml
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   kafka:
     image: apache/kafka:latest
     ports:
       - 9092:9092
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   redis:
     image: redis
     ports:
       - 6379:6379
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
     ports:
@@ -67,6 +96,10 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.3
     ports:
@@ -75,6 +108,10 @@ services:
       - ELASTICSEARCH_HOSTS=http://elastic:9200
     volumes:
       - ../../data/elastic:/usr/share/elasticsearch/data:rw
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
   nifi:
     image: azoz01/nifi
     cap_add:
@@ -88,6 +125,10 @@ services:
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=user
       - SINGLE_USER_CREDENTIALS_PASSWORD=useruseruser
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
     # volumes: 
     #   - ../../data/nifi/database_repository:/opt/nifi/nifi-current/database_repository
     #   - ../../data/nifi/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
