@@ -831,7 +831,7 @@
                         </properties>
                         <retryCount>10</retryCount>
                         <runDurationMillis>0</runDurationMillis>
-                        <schedulingPeriod>1 sec</schedulingPeriod>
+                        <schedulingPeriod>60 sec</schedulingPeriod>
                         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
                         <yieldDuration>1 sec</yieldDuration>
                     </config>
@@ -1283,11 +1283,11 @@
                             </entry>
                             <entry>
 <key>Directory</key>
-<value>/crypto/news/data/${source}/${id}.json</value>
+<value>/crypto/news/data/${source}/${id}</value>
                             </entry>
                             <entry>
 <key>Conflict Resolution Strategy</key>
-<value>replace</value>
+<value>ignore</value>
                             </entry>
                             <entry>
 <key>Append Mode</key>
@@ -1866,5 +1866,5 @@
             </variables>
         </processGroups>
     </snippet>
-    <timestamp>11/22/2024 16:55:05 UTC</timestamp>
+    <timestamp>11/22/2024 17:04:38 UTC</timestamp>
 </template>
