@@ -2,7 +2,7 @@
 <template encoding-version="1.3">
     <description></description>
     <groupId>5b14182c-0193-1000-5e0e-0b48126b616e</groupId>
-    <name>coinbase</name>
+    <name>coinbase2</name>
     <snippet>
         <connections>
             <id>4b44ac65-a458-3d50-0000-000000000000</id>
@@ -1067,7 +1067,7 @@
                 <name>success</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.websocket.PutWebSocket</type>
         </processors>
@@ -1495,7 +1495,7 @@
                 <name>original</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.standard.MergeRecord</type>
         </processors>
@@ -1578,7 +1578,7 @@
                 <name>text message</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.websocket.ConnectWebSocket</type>
         </processors>
@@ -1688,7 +1688,7 @@
                 <name>success</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.attributes.UpdateAttribute</type>
         </processors>
@@ -1930,7 +1930,7 @@
                 <name>success</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.hadoop.PutHDFS</type>
         </processors>
@@ -2172,7 +2172,7 @@
                     </entry>
                     <entry>
                         <key>topic</key>
-                        <value>blockchain</value>
+                        <value>exchange-ticker</value>
                     </entry>
                     <entry>
                         <key>use-transactions</key>
@@ -2293,7 +2293,7 @@
                 <name>success</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.kafka.pubsub.PublishKafka_2_6</type>
         </processors>
@@ -2413,10 +2413,10 @@
                 <name>success</name>
                 <retry>false</retry>
             </relationships>
-            <state>RUNNING</state>
+            <state>STOPPED</state>
             <style/>
             <type>org.apache.nifi.processors.standard.AttributesToJSON</type>
         </processors>
     </snippet>
-    <timestamp>11/23/2024 22:22:07 UTC</timestamp>
+    <timestamp>11/23/2024 22:27:52 UTC</timestamp>
 </template>
