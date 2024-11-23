@@ -80,6 +80,7 @@ services:
       nofile:
         soft: 32768
         hard: 32768
+    container_name: kafka
   redis:
     image: redis
     ports:
