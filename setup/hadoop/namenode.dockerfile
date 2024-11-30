@@ -5,8 +5,7 @@ RUN wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.28/mysql-
 RUN wget https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz --no-check-certificate
 RUN sudo curl -o /etc/yum.repos.d/CentOS-Base.repo https://el7.repo.almalinux.org/centos/CentOS-Base.repo
 # RUN sudo yum install -y python3.9
-
-RUN sudo yum install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel make \
+RUN sudo yum install -y gcc sqlite-devel openssl-devel bzip2-devel libffi-devel zlib-devel make \
     && cd /tmp \
     && wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz \
     && tar -xvf Python-3.9.6.tgz \
@@ -26,7 +25,7 @@ RUN mv mysql-connector-java-8.0.28.jar /opt/hive/lib/
 # setup metastore
 ENV HIVE_HOME=/opt/hive
 ENV PATH=$PATH:$HIVE_HOME/bin
-COPY ./config/hive-site.xml /opt/hive/conf/
+COPY setup/hadoop/config/hive-site.xml /opt/hive/conf/
 
 # SETUP SPARK
 
@@ -42,6 +41,16 @@ RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/spark-token-provider-kafka-
     https://repo1.maven.org/maven2/org/apache/spark/spark-token-provider-kafka-0-10_2.12/3.5.0/spark-token-provider-kafka-0-10_2.12-3.5.0.jar
 RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/commons-pool2-2.12.0.jar \
     https://repo1.maven.org/maven2/org/apache/commons/commons-pool2/2.12.0/commons-pool2-2.12.0.jar
+RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/jedis-3.9.0.jar \
+    https://repo1.maven.org/maven2/redis/clients/jedis/3.9.0/jedis-3.9.0.jar
+RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/spark-redis_2.12-3.5.0.jar \
+    https://repo1.maven.org/maven2/io/github/asantoz/spark-redis_2.12/3.5.0/spark-redis_2.12-3.5.0.jar
 
 RUN sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
 ENV PATH="$PATH:/opt/spark/spark-3.5.0-bin-hadoop3/bin"
+
+WORKDIR /code
+RUN python3.9 -m venv venv
+COPY code/requirements.txt .
+RUN ./venv/bin/pip install -r requirements.txt
+COPY code .

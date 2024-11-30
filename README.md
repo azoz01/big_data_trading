@@ -12,7 +12,7 @@ newer versions do not allow hyphen in variable name
 
 To start run entire setup execute:
 ``` bash
-    cd setup && ./initialize_host.sh && ./run.sh
+    ./setup/initialize_host.sh && ./setup/run.sh
 ```
 
 ## Nifi tips & tricks

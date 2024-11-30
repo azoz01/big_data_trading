@@ -1,8 +1,15 @@
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, from_json, from_unixtime
+from pyspark.sql.functions import (
+    col,
+    from_json,
+    from_unixtime,
+    lit,
+    to_timestamp,
+)
 from pyspark.sql.types import (
     ArrayType,
     BooleanType,
+    IntegerType,
     LongType,
     StringType,
     StructField,
@@ -39,18 +46,10 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
                                                     LongType(),
                                                     True,
                                                 ),
-                                                StructField(
-                                                    "type", LongType(), True
-                                                ),
-                                                StructField(
-                                                    "addr", StringType(), True
-                                                ),
-                                                StructField(
-                                                    "value", LongType(), True
-                                                ),
-                                                StructField(
-                                                    "n", LongType(), True
-                                                ),
+                                                StructField("type", LongType(), True),
+                                                StructField("addr", StringType(), True),
+                                                StructField("value", LongType(), True),
+                                                StructField("n", LongType(), True),
                                                 StructField(
                                                     "script",
                                                     StringType(),
@@ -66,7 +65,7 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
                         ),
                         True,
                     ),
-                    StructField("time", LongType(), True),
+                    StructField("time", IntegerType(), True),
                     StructField("tx_index", LongType(), True),
                     StructField("vin_sz", LongType(), True),
                     StructField("hash", StringType(), True),
@@ -113,13 +112,13 @@ def process_transactions(df: DataFrame) -> DataFrame:
         col("x.out").alias("out"),
         col("x.hash").alias("hash"),
         col("x.relayed_by").alias("relayed_by"),
+        lit("transaction").alias("event"),
+        to_timestamp(from_unixtime(col("x.time"))).alias("timestamp"),
     )
 
 
 def get_transactions_history(spark: SparkSession) -> DataFrame:
-    df = spark.read.schema(INITIAL_TRANSACTIONS_SCHEMA).json(
-        TRANSACTIONS_HISTORY_PATH
-    )
+    df = spark.read.schema(INITIAL_TRANSACTIONS_SCHEMA).parquet(TRANSACTIONS_HISTORY_PATH)
     return process_transactions(df)
 
 
@@ -135,4 +134,4 @@ def get_transactions_stream(spark: SparkSession) -> DataFrame:
         .select(from_json("value", INITIAL_TRANSACTIONS_SCHEMA).alias("data"))
         .select("data.*")
     )
-    return process_transactions(parsed_stream)
+    return process_transactions(parsed_stream).withWatermark("timestamp", "1 week")

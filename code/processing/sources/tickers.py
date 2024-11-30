@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, from_json
+from pyspark.sql.functions import col, from_json, lit
 from pyspark.sql.types import (
     DoubleType,
     LongType,
@@ -48,11 +48,13 @@ def process_tickers(df: DataFrame) -> DataFrame:
         .withColumn("best_ask", col("best_ask").cast(DoubleType()))
         .withColumn("best_ask_size", col("best_ask_size").cast(DoubleType()))
         .withColumn("last_size", col("last_size").cast(DoubleType()))
+        .withColumn("timestamp", col("time").cast(TimestampType()))
+        .withColumn("event", lit("ticker"))
     )
 
 
 def get_tickers_history(spark: SparkSession) -> DataFrame:
-    df = spark.read.schema(TICKER_RAW_SCHEMA).json(TICKERS_HISTORY_PATH)
+    df = spark.read.schema(TICKER_RAW_SCHEMA).parquet(TICKERS_HISTORY_PATH)
     return process_tickers(df)
 
 
@@ -68,4 +70,4 @@ def get_tickers_stream(spark: SparkSession) -> DataFrame:
         .select(from_json("value", TICKER_RAW_SCHEMA).alias("data"))
         .select("data.*")
     )
-    return process_tickers(parsed_stream)
+    return process_tickers(parsed_stream).withWatermark("timestamp", "1 week")

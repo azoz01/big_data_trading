@@ -18,7 +18,10 @@ NEWS_HISTORY_PATH = "/crypto/news/data/"
 
 
 def process_news(df: DataFrame) -> DataFrame:
-    return df.withColumn("timestamp", col("version").cast(TimestampType()))
+    return df.withColumn(
+        "timestamp",
+        col("version").cast(TimestampType()),
+    )
 
 
 def get_news_history(spark: SparkSession) -> DataFrame:
@@ -32,4 +35,12 @@ def get_newest_news_snapshot(spark: SparkSession) -> DataFrame:
         df.withColumn("rnk", rank().over(Window.orderBy(desc("version"))))
         .filter(col("rnk") == 1)
         .drop("rnk")
+    )
+
+
+def get_news_sentiment_aggregates_from_redis(spark: SparkSession) -> DataFrame:
+    return (
+        spark.read.format("org.apache.spark.sql.redis")
+        .option("table", "sentiments_aggregates")
+        .load()
     )
