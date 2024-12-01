@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
-from ...constants import FEATURE_LIST
+from ...constants import FEATURE_LIST, TECHNICAL_COLUMNS
 from .news import (
     add_news_features_offline,
     add_news_features_online,
@@ -25,7 +25,7 @@ def calculate_features_stream(
     features = features.filter(col("event") == "ticker")
     features = add_news_features_online(features, news_sentiments_df)
     features = calculate_tickers_features_online(features)
-    features = features.select(FEATURE_LIST)
+    features = features.select(FEATURE_LIST + TECHNICAL_COLUMNS)
     return features
 
 
@@ -41,5 +41,5 @@ def calculate_features_df(
     features = features.filter(col("event") == "ticker")
 
     features = calculate_tickers_features_offline(features)
-    features = features.select(FEATURE_LIST + ["timestamp", "event"])
+    features = features.select(FEATURE_LIST + TECHNICAL_COLUMNS)
     return features

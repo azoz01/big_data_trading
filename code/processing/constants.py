@@ -28,6 +28,8 @@ FEATURE_LIST = [
     "cryptocurrency_news_min_sentiment",
 ]
 
+TECHNICAL_COLUMNS = ["timestamp", "event"]
+
 CRYPTO_NEWS_SOURCES = ["coindesk", "cointelegraph", "cryptocurrency_news"]
 
 NEWS_COLUMNS = [
