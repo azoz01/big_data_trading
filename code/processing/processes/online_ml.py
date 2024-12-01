@@ -1,4 +1,4 @@
-from ..ml.features import calculate_features_stream
+from ..ml.features.features import calculate_features_stream
 from ..sources.news import get_news_sentiment_aggregates_from_redis
 from ..sources.tickers import get_tickers_stream
 from ..sources.transactions import get_transactions_stream
@@ -17,4 +17,6 @@ class OnlineMlProcess:
         features = calculate_features_stream(
             tickers_stream, transactions_stream, news_sentiments_df
         )
-        features.writeStream.outputMode("append").format("console").start().awaitTermination()
+        features.writeStream.outputMode("append").format("console").options(
+            truncate=False
+        ).start().awaitTermination()

@@ -134,4 +134,4 @@ def get_transactions_stream(spark: SparkSession) -> DataFrame:
         .select(from_json("value", INITIAL_TRANSACTIONS_SCHEMA).alias("data"))
         .select("data.*")
     )
-    return process_transactions(parsed_stream).withWatermark("timestamp", "1 week")
+    return process_transactions(parsed_stream)

@@ -1,7 +1,7 @@
 import nltk
 from pyspark.sql.functions import col
 
-from ..ml.sentiment import calculate_sentiment_aggregates, sentiment_udf
+from ..ml.features.news import calculate_sentiment_aggregates, sentiment_udf
 from ..sources.news import get_newest_news_snapshot
 from ..utils import get_or_create_spark_session
 from .process_registry import process_registry

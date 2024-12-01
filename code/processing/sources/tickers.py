@@ -70,4 +70,4 @@ def get_tickers_stream(spark: SparkSession) -> DataFrame:
         .select(from_json("value", TICKER_RAW_SCHEMA).alias("data"))
         .select("data.*")
     )
-    return process_tickers(parsed_stream).withWatermark("timestamp", "1 week")
+    return process_tickers(parsed_stream)

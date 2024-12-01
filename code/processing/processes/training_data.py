@@ -1,5 +1,5 @@
 from ..constants import FULL_TRAINING_DATA_TABLE, TRAINING_DATA_SCHEMA
-from ..ml.features import calculate_features_df
+from ..ml.features.features import calculate_features_df
 from ..sources.news import get_news_history
 from ..sources.tickers import get_tickers_history
 from ..sources.transactions import get_transactions_history

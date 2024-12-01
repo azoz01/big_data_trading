@@ -6,6 +6,7 @@ def get_or_create_spark_session() -> SparkSession:
         SparkSession.builder.appName("big_data_trading")
         .config("spark.redis.host", "redis")
         .config("spark.redis.port", "6379")
+        .config("spark.sql.streaming.statefulOperator.allowMultiple", False)
         .enableHiveSupport()
         .getOrCreate()
     )
