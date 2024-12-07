@@ -1,5 +1,6 @@
 from ..constants import FULL_TRAINING_DATA_TABLE, TRAINING_DATA_SCHEMA
 from ..ml.features.features import calculate_features_df
+from ..ml.features.target import calculate_target_column
 from ..sources.news import get_news_history
 from ..sources.tickers import get_tickers_history
 from ..sources.transactions import get_transactions_history
@@ -16,7 +17,8 @@ class TrainingDataProcess:
         transactions_history = get_transactions_history(spark)
         news_history = get_news_history(spark)
         features = calculate_features_df(tickers_history, transactions_history, news_history)
+        training_data = calculate_target_column(features)
         ensure_schema_exists(TRAINING_DATA_SCHEMA)
-        features.write.mode("overwrite").saveAsTable(
+        training_data.write.mode("overwrite").saveAsTable(
             f"{TRAINING_DATA_SCHEMA}.{FULL_TRAINING_DATA_TABLE}"
         )

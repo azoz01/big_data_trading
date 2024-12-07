@@ -26,6 +26,7 @@ RUN mv mysql-connector-java-8.0.28.jar /opt/hive/lib/
 ENV HIVE_HOME=/opt/hive
 ENV PATH=$PATH:$HIVE_HOME/bin
 COPY setup/hadoop/config/hive-site.xml /opt/hive/conf/
+COPY setup/hadoop/config/core-site.xml /opt/hive/conf/
 
 # SETUP SPARK
 
@@ -45,6 +46,8 @@ RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/jedis-3.9.0.jar \
     https://repo1.maven.org/maven2/redis/clients/jedis/3.9.0/jedis-3.9.0.jar
 RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/spark-redis_2.12-3.5.0.jar \
     https://repo1.maven.org/maven2/io/github/asantoz/spark-redis_2.12/3.5.0/spark-redis_2.12-3.5.0.jar
+RUN curl -fo /opt/spark/spark-3.5.0-bin-hadoop3/jars/elasticsearch-hadoop-8.15.3.jar \
+    https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/8.15.3/elasticsearch-hadoop-8.15.3.jar
 
 RUN sudo ln -s /usr/local/bin/python3.9 /usr/bin/python3
 ENV PATH="$PATH:/opt/spark/spark-3.5.0-bin-hadoop3/bin"
@@ -54,3 +57,6 @@ RUN python3.9 -m venv venv
 COPY code/requirements.txt .
 RUN ./venv/bin/pip install -r requirements.txt
 COPY code .
+
+RUN cp /opt/hive/conf/hive-site.xml /opt/spark/spark-3.5.0-bin-hadoop3/conf/
+COPY setup/hadoop/config/spark-defaults.conf /opt/spark/spark-3.5.0-bin-hadoop3/conf/

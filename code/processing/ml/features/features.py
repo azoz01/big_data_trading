@@ -1,7 +1,9 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import coalesce, col, lit
 
 from ...constants import FEATURE_LIST, TECHNICAL_COLUMNS
+from ...ml.model.utils import FEATURES_ASSEMBLER
+from ...utils import convert_features_to_double_non_null
 from .news import (
     add_news_features_offline,
     add_news_features_online,
@@ -26,6 +28,8 @@ def calculate_features_stream(
     features = add_news_features_online(features, news_sentiments_df)
     features = calculate_tickers_features_online(features)
     features = features.select(FEATURE_LIST + TECHNICAL_COLUMNS)
+    features = convert_features_to_double_non_null(features)
+    features = FEATURES_ASSEMBLER.transform(features)
     return features
 
 
@@ -41,5 +45,7 @@ def calculate_features_df(
     features = features.filter(col("event") == "ticker")
 
     features = calculate_tickers_features_offline(features)
-    features = features.select(FEATURE_LIST + TECHNICAL_COLUMNS)
+    features = features.select(
+        [coalesce(col(name), lit(0.0)).alias(name) for name in FEATURE_LIST] + TECHNICAL_COLUMNS
+    )
     return features

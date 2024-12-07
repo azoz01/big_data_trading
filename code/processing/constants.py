@@ -1,4 +1,5 @@
 FEATURE_LIST = [
+    "price",
     "open_24h",
     "volume_24h",
     "low_24h",
@@ -40,3 +41,7 @@ NEWS_COLUMNS = [
 
 TRAINING_DATA_SCHEMA = "training_data"
 FULL_TRAINING_DATA_TABLE = "full_training_dataset"
+
+FEATURES_VECTOR_COLUMN = "features"
+
+MODEL_PATH = "model.model"
