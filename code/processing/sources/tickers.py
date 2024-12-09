@@ -1,18 +1,18 @@
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, from_json, lit
+from pyspark.sql.functions import col, from_json, lit, to_timestamp
 from pyspark.sql.types import (
     DoubleType,
-    LongType,
+    IntegerType,
     StringType,
     StructField,
     StructType,
-    TimestampType,
 )
 
+# Commented out some columns due to elastic errors
 TICKER_RAW_SCHEMA = StructType(
     [
         StructField("type", StringType(), True),
-        StructField("sequence", LongType(), True),
+        StructField("sequence", IntegerType(), True),
         StructField("product_id", StringType(), True),
         StructField("price", StringType(), True),
         StructField("open_24h", StringType(), True),
@@ -26,7 +26,7 @@ TICKER_RAW_SCHEMA = StructType(
         StructField("best_ask_size", StringType(), True),
         StructField("side", StringType(), True),
         StructField("time", StringType(), True),
-        StructField("trade_id", LongType(), True),
+        StructField("trade_id", IntegerType(), True),
         StructField("last_size", StringType(), True),
     ]
 )
@@ -44,11 +44,10 @@ def process_tickers(df: DataFrame) -> DataFrame:
         .withColumn("volume_30d", col("volume_30d").cast(DoubleType()))
         .withColumn("best_bid", col("best_bid").cast(DoubleType()))
         .withColumn("best_bid_size", col("best_bid_size").cast(DoubleType()))
-        .withColumn("time", col("time").cast(TimestampType()))
         .withColumn("best_ask", col("best_ask").cast(DoubleType()))
         .withColumn("best_ask_size", col("best_ask_size").cast(DoubleType()))
         .withColumn("last_size", col("last_size").cast(DoubleType()))
-        .withColumn("timestamp", col("time").cast(TimestampType()))
+        .withColumn("timestamp", to_timestamp(col("time")))
         .withColumn("event", lit("ticker"))
     )
 
@@ -71,3 +70,7 @@ def get_tickers_stream(spark: SparkSession) -> DataFrame:
         .select("data.*")
     )
     return process_tickers(parsed_stream)
+
+
+def process_tickers_to_elastic(df: DataFrame) -> DataFrame:
+    return df.drop("sequence", "time")

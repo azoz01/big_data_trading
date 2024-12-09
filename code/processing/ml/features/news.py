@@ -11,7 +11,7 @@ from pyspark.sql.functions import (
     max,
     min,
     regexp_replace,
-    std,
+    stddev,
     udf,
     unix_timestamp,
     when,
@@ -33,7 +33,7 @@ sentiment_udf = udf(sentiment_analyzer, StringType())
 def calculate_sentiment_aggregates(grouped_data: GroupedData) -> DataFrame:
     return grouped_data.agg(
         avg(col("sentiment")).alias("avg_sentiment"),
-        std(col("sentiment")).alias("std_sentiment"),
+        stddev(col("sentiment")).alias("std_sentiment"),
         max(col("sentiment")).alias("max_sentiment"),
         min(col("sentiment")).alias("min_sentiment"),
     )

@@ -18,7 +18,11 @@ class OnlineMlProcess:
         features = calculate_features_stream(
             tickers_stream, transactions_stream, news_sentiments_df
         )
-        features_with_prediction = predict_online(features).drop("features")
-        features_with_prediction.writeStream.outputMode("append").format("console").options(
-            truncate=False
+        features_with_prediction = predict_online(features).drop(
+            "features", "rawPrediction", "probability"
+        )
+        features_with_prediction.writeStream.format("org.elasticsearch.spark.sql").option(
+            "es.mapping.id", "timestamp"
+        ).option("es.resource", "predictions").option("es.batch.size.entries", "1").option(
+            "checkpointLocation", ".checkpoint_es"
         ).start().awaitTermination()

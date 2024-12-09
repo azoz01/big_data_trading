@@ -10,12 +10,12 @@ from pyspark.sql.types import (
     ArrayType,
     BooleanType,
     IntegerType,
-    LongType,
     StringType,
     StructField,
     StructType,
 )
 
+# Commented out some columns due to elastic errors
 INITIAL_TRANSACTIONS_SCHEMA = StructType(
     [
         StructField("op", StringType(), True),
@@ -23,15 +23,15 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
             "x",
             StructType(
                 [
-                    StructField("lock_time", LongType(), True),
-                    StructField("ver", LongType(), True),
-                    StructField("size", LongType(), True),
+                    StructField("lock_time", IntegerType(), True),
+                    StructField("ver", IntegerType(), True),
+                    StructField("size", IntegerType(), True),
                     StructField(
                         "inputs",
                         ArrayType(
                             StructType(
                                 [
-                                    StructField("sequence", LongType(), True),
+                                    StructField("sequence", IntegerType(), True),
                                     StructField(
                                         "prev_out",
                                         StructType(
@@ -43,13 +43,13 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
                                                 ),
                                                 StructField(
                                                     "tx_index",
-                                                    LongType(),
+                                                    IntegerType(),
                                                     True,
                                                 ),
-                                                StructField("type", LongType(), True),
+                                                StructField("type", IntegerType(), True),
                                                 StructField("addr", StringType(), True),
-                                                StructField("value", LongType(), True),
-                                                StructField("n", LongType(), True),
+                                                StructField("value", IntegerType(), True),
+                                                StructField("n", IntegerType(), True),
                                                 StructField(
                                                     "script",
                                                     StringType(),
@@ -66,10 +66,10 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
                         True,
                     ),
                     StructField("time", IntegerType(), True),
-                    StructField("tx_index", LongType(), True),
-                    StructField("vin_sz", LongType(), True),
+                    StructField("tx_index", IntegerType(), True),
+                    StructField("vin_sz", IntegerType(), True),
                     StructField("hash", StringType(), True),
-                    StructField("vout_sz", LongType(), True),
+                    StructField("vout_sz", IntegerType(), True),
                     StructField("relayed_by", StringType(), True),
                     StructField(
                         "out",
@@ -77,11 +77,11 @@ INITIAL_TRANSACTIONS_SCHEMA = StructType(
                             StructType(
                                 [
                                     StructField("spent", BooleanType(), True),
-                                    StructField("tx_index", LongType(), True),
-                                    StructField("type", LongType(), True),
+                                    StructField("tx_index", IntegerType(), True),
+                                    StructField("type", IntegerType(), True),
                                     StructField("addr", StringType(), True),
-                                    StructField("value", LongType(), True),
-                                    StructField("n", LongType(), True),
+                                    StructField("value", IntegerType(), True),
+                                    StructField("n", IntegerType(), True),
                                     StructField("script", StringType(), True),
                                 ]
                             )
@@ -102,14 +102,6 @@ def process_transactions(df: DataFrame) -> DataFrame:
     return df.select(
         col("op"),
         from_unixtime(col("x.time")).alias("time"),
-        col("x.lock_time").cast(LongType()).alias("lock_time"),
-        col("x.ver").cast(LongType()).alias("ver"),
-        col("x.size").cast(LongType()).alias("size"),
-        col("x.tx_index").cast(LongType()).alias("tx_index"),
-        col("x.vin_sz").cast(LongType()).alias("vin_sz"),
-        col("x.vout_sz").cast(LongType()).alias("vout_sz"),
-        col("x.inputs").alias("inputs"),
-        col("x.out").alias("out"),
         col("x.hash").alias("hash"),
         col("x.relayed_by").alias("relayed_by"),
         lit("transaction").alias("event"),
@@ -135,3 +127,16 @@ def get_transactions_stream(spark: SparkSession) -> DataFrame:
         .select("data.*")
     )
     return process_transactions(parsed_stream)
+
+
+def process_transactions_to_elastic(df: DataFrame) -> DataFrame:
+    return df.drop(
+        "lock_time",
+        "ver",
+        "size",
+        "tx_index",
+        "vin_sz",
+        "vout_sz",
+        "inputs",
+        "out",
+    )
