@@ -71,7 +71,7 @@ Batch process that reads data from `training_data.full_training_dataset`, perfor
 ```bash
 PYSPARK_PYTHON=./venv/bin/python spark-submit main.py --process model_training
 ```
-### Model training
+### Online ML
 Stream process that online ingests data from Redis, calculates real-time aggregates, extracts feature vector, makes predictions using model from `/user/hadoop/model.model` and writes it to `predictions` index in Elastic in online manner.
 ```bash
 PYSPARK_PYTHON=./venv/bin/python spark-submit main.py --process online_ml
