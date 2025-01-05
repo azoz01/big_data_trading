@@ -28,6 +28,8 @@ services:
       - ./scripts:/scripts:ro
     ports:
       - 9864:9864
+      - 50010:50010
+      - 50020:50020
     command: /scripts/initialize_datanode.sh
     ulimits:
       nofile:
@@ -40,6 +42,7 @@ services:
     ports:
       - 9870:9870
       - 50070:50070
+      - 8020:8020
     env_file:
       - ./config/hadoop-config.yaml
     volumes:

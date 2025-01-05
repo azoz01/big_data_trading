@@ -1,2 +1,4 @@
 data
 setup/log
+.venv
+*.pyc
