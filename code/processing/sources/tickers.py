@@ -61,6 +61,7 @@ def get_tickers_stream(spark: SparkSession) -> DataFrame:
     stream = (
         spark.readStream.format("kafka")
         .option("kafka.bootstrap.servers", "broker:19092")
+        .option("failOnDataLoss", "false")
         .option("subscribe", "exchange-ticker")
         .load()
     )

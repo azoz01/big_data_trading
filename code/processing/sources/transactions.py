@@ -118,6 +118,7 @@ def get_transactions_stream(spark: SparkSession) -> DataFrame:
     stream = (
         spark.readStream.format("kafka")
         .option("kafka.bootstrap.servers", "broker:19092")
+        .option("failOnDataLoss", "false")
         .option("subscribe", "blockchain")
         .load()
     )

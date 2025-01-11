@@ -42,6 +42,7 @@ Mapping of addresses of specific components:
 * `predictions` - an index with online features + 0-1 prediction
 * `transactions` - an index with transactions copied from HDFS
 * `tickers` - an index with tickers copied from HDFS
+* `roi` - an index with calculated model's ROI per ticker
 
 **Hive tables**:
 * `training_data.full_training_dataset` - table with full training data created using offline logic
@@ -75,4 +76,9 @@ PYSPARK_PYTHON=./venv/bin/python spark-submit main.py --process model_training
 Stream process that online ingests data from Redis, calculates real-time aggregates, extracts feature vector, makes predictions using model from `/user/hadoop/model.model` and writes it to `predictions` index in Elastic in online manner.
 ```bash
 PYSPARK_PYTHON=./venv/bin/python spark-submit main.py --process online_ml
+```
+### Calculate ROI
+Batch process that calculates ROI of the trading model based on the online predictions. It reads predictions from elastic (`prediction` index) as writes it to other index - `roi`
+```bash
+PYSPARK_PYTHON=./venv/bin/python spark-submit main.py --process calculate_roi
 ```

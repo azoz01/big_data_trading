@@ -1,3 +1,6 @@
+from pyspark.sql.functions import col, udf
+from pyspark.sql.types import FloatType
+
 from ..ml.features.features import calculate_features_stream
 from ..ml.model.serve import predict_online
 from ..sources.news import get_news_sentiment_aggregates_from_redis
@@ -18,11 +21,16 @@ class OnlineMlProcess:
         features = calculate_features_stream(
             tickers_stream, transactions_stream, news_sentiments_df
         )
-        features_with_prediction = predict_online(features).drop(
-            "features", "rawPrediction", "probability"
+        features_with_prediction = (
+            predict_online(features)
+            .withColumn("probability", udf(lambda v: float(v[1]), FloatType())("probability"))
+            .drop("features", "rawPrediction")
         )
         features_with_prediction.writeStream.format("org.elasticsearch.spark.sql").option(
             "es.mapping.id", "timestamp"
         ).option("es.resource", "predictions").option("es.batch.size.entries", "1").option(
             "checkpointLocation", ".checkpoint_es"
         ).start().awaitTermination()
+
+
+# PYSPARK_PYTHON=./venv/bin/python nohup spark-submit main.py --process online_ml &> online.log &
