@@ -1,8 +1,9 @@
-from pyspark.sql.functions import col, udf
+from pyspark.sql.functions import udf
 from pyspark.sql.types import FloatType
 
+from ..constants import MODEL_PATH
 from ..ml.features.features import calculate_features_stream
-from ..ml.model.serve import predict_online
+from ..ml.model.serve import OnlinePredictor
 from ..sources.news import get_news_sentiment_aggregates_from_redis
 from ..sources.tickers import get_tickers_stream
 from ..sources.transactions import get_transactions_stream
@@ -22,7 +23,7 @@ class OnlineMlProcess:
             tickers_stream, transactions_stream, news_sentiments_df
         )
         features_with_prediction = (
-            predict_online(features)
+            OnlinePredictor(MODEL_PATH)(features)
             .withColumn("probability", udf(lambda v: float(v[1]), FloatType())("probability"))
             .drop("features", "rawPrediction")
         )

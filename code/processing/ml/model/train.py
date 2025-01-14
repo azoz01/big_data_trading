@@ -23,7 +23,7 @@ def train_evaluate_model(
     train_split: DataFrame, test_split: DataFrame
 ) -> Tuple[LogisticRegression, dict[str, float]]:
     train_split = FEATURES_ASSEMBLER.transform(train_split)
-    model = LogisticRegression(featuresCol=FEATURES_VECTOR_COLUMN, labelCol="target")
+    model = LogisticRegression(featuresCol=FEATURES_VECTOR_COLUMN, labelCol="target", regParam=1e-3)
     model = model.fit(train_split)
     evaluator = BinaryClassificationEvaluator(labelCol="target", metricName="areaUnderROC")
     train_metric = evaluator.evaluate(model.transform(train_split))

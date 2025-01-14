@@ -1,0 +1,6 @@
+Logistic Regression Tuned - {'train_metric': 0.5852299487803687, 'test_metric': 0.588662829146609}
+Logistic Regression - {'train_metric': 0.664298189503634, 'test_metric': 0.5872091986949769}
+Decision Tree - {'train_metric': 0.5132766332805423, 'test_metric': 0.5682522851927863}
+GBDT - {'train_metric': 0.6572077434459703, 'test_metric': 0.5771567118927439}
+Random forest - {'train_metric': 0.5826036807413025, 'test_metric': 0.5220843689782122}
+SVC - {'train_metric': 0.5845250595055898, 'test_metric': 0.5287058451412835}
