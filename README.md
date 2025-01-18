@@ -39,10 +39,16 @@ Mapping of addresses of specific components:
 * `/user/hadoop/model.model` - path where model is stored
 
 **Elastic Indexes**:
+CREATE INDICES BEFORE RUNNING SPARK PROCESSESS
+CREATE Mapping of timestamp field to date type!!
 * `predictions` - an index with online features + 0-1 prediction
 * `transactions` - an index with transactions copied from HDFS
 * `tickers` - an index with tickers copied from HDFS
 * `roi` - an index with calculated model's ROI per ticker
+
+**Kibana Dashboard**:
+to load the dashboard:
+1. Stack Management -> Kibana: Saved objects -> Import -> upload the `dashboard.ndjson` file
 
 **Hive tables**:
 * `training_data.full_training_dataset` - table with full training data created using offline logic
