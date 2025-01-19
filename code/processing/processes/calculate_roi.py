@@ -1,11 +1,14 @@
 from pyspark.sql.functions import (
     col,
+    date_trunc,
+    desc,
     exp,
     lag,
     last,
     lit,
     log,
     percentile_approx,
+    rank,
     sum,
     when,
 )
@@ -26,6 +29,10 @@ class CalculateRoiProcess:
             .option("es.resource", "predictions")
             .load()
         )
+
+        df = df.withColumn(
+            "date_rank", rank().over(Window.orderBy(desc(date_trunc("day", col("timestamp")))))
+        ).filter(col("date_rank") == 1)
         bounds = df.select(
             percentile_approx(col("probability"), 0.9).alias("upper"),
             percentile_approx(col("probability"), 0.1).alias("lower"),
