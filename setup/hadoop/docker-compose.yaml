@@ -116,10 +116,14 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       nofile:
         soft: 32768
         hard: 32768
+      memlock:
+        soft: -1
+        hard: -1
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.3
     ports:
